@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { ServiceWorkerRegistration } from "@/app/components/ServiceWorkerRegistration";
+import { ServiceWorkerRegister } from "@/components/pwa/sw-register";
 import Head from "./head";
 
 export const metadata: Metadata = {
@@ -40,7 +40,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Head />
-        <ServiceWorkerRegistration />
+        <ServiceWorkerRegister />
         {children}
       </body>
     </html>
