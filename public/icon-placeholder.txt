@@ -1,0 +1,9 @@
+This file is a placeholder. You need to create two icon files:
+
+1. icon-192x192.png (192x192 pixels)
+2. icon-512x512.png (512x512 pixels)
+
+Place these files in the public directory. You can use any image editor or online tool to create them.
+
+The app will work without these icons, but they are required for proper PWA installation.
+
