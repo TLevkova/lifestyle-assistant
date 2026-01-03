@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Download, Upload } from "lucide-react";
+import { Download, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { exportDatabase, importDatabase } from "@/lib/db/backup";
 import { toast } from "sonner";
 import { dayLogRepo } from "@/lib/db/repos/dayLogRepo";
 import type { DayLog } from "@/lib/db/schema";
+import { unregisterAllServiceWorkers } from "@/components/pwa/sw-register";
 
 export default function SettingsPage() {
   const [dbTestStatus, setDbTestStatus] = useState<string>("");
@@ -94,8 +95,46 @@ export default function SettingsPage() {
     }
   };
 
+  const handleCleanupServiceWorkers = async () => {
+    const confirmed = window.confirm(
+      "This will unregister ALL service workers and clear ALL caches. The page will reload after cleanup. Continue?"
+    );
+    if (!confirmed) return;
+
+    try {
+      const result = await unregisterAllServiceWorkers();
+      toast.success(
+        `Cleaned up ${result.unregistered} service worker(s) and ${result.cachesCleared} cache(s)`
+      );
+      // Reload after a short delay to ensure cleanup is complete
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Cleanup failed";
+      toast.error(errorMessage);
+      console.error("Service worker cleanup error:", error);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Sync & Backup</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <div className="text-sm">
+            <span className="text-muted-foreground">Sync: </span>
+            <span>not enabled (Phase 4)</span>
+          </div>
+          <div className="text-sm">
+            <span className="text-muted-foreground">Last local backup: </span>
+            <span>unknown</span>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Database Backup</CardTitle>
@@ -132,6 +171,30 @@ export default function SettingsPage() {
             />
             <p className="text-sm text-muted-foreground">
               Import data from a JSON backup file. This will replace your current database.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Service Worker</CardTitle>
+          <CardDescription>
+            Clean up old or stuck service workers (development only)
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Button
+              variant="destructive"
+              onClick={handleCleanupServiceWorkers}
+              className="w-full sm:w-auto"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Unregister All Service Workers
+            </Button>
+            <p className="text-sm text-muted-foreground">
+              Removes all service worker registrations and clears all caches. Useful when you have stuck or stopped service workers.
             </p>
           </div>
         </CardContent>

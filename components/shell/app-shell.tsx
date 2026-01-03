@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { BottomNav } from "@/components/nav/bottom-nav";
 import { Toaster } from "@/components/ui/sonner";
+import { NetworkBadge } from "@/components/pwa/network-badge";
 
 const pageTitles: Record<string, string> = {
   "/": "Home",
@@ -24,6 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto max-w-screen-sm">
           <div className="flex h-14 items-center px-4">
             <h1 className="text-lg font-semibold">{title}</h1>
+            <NetworkBadge />
           </div>
         </div>
       </header>
