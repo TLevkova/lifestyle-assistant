@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { BottomNav } from "@/components/nav/bottom-nav";
+import { Toaster } from "@/components/ui/sonner";
 
 const pageTitles: Record<string, string> = {
   "/": "Home",
@@ -36,6 +37,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Bottom Navigation */}
       <BottomNav />
+      
+      {/* Toast Notifications */}
+      <Toaster />
     </div>
   );
 }
