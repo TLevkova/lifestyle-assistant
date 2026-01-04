@@ -1,36 +1,74 @@
 import { db, generateId, getCurrentTimestamp } from "../index";
-import type { DayLog } from "../schema";
+import type { DayLog, DayMeals, MealType } from "../schema";
+
+/**
+ * Helper function to ensure meals array always contains all 4 meal groups
+ */
+function ensureMealGroups(meals?: DayMeals[]): DayMeals[] {
+  const mealTypes: MealType[] = ['breakfast', 'lunch', 'dinner', 'snacks'];
+  const existingMeals = meals || [];
+  
+  // Create a map of existing meals by type
+  const mealsByType = new Map<MealType, DayMeals>();
+  existingMeals.forEach(meal => {
+    mealsByType.set(meal.type, meal);
+  });
+  
+  // Ensure all 4 meal types exist
+  return mealTypes.map(type => {
+    const existing = mealsByType.get(type);
+    return existing || { type, items: [] };
+  });
+}
+
+/**
+ * Normalize a DayLog to ensure it has all required fields (for backward compatibility)
+ */
+function normalizeDayLog(log: DayLog | undefined): DayLog | undefined {
+  if (!log) return undefined;
+  
+  return {
+    ...log,
+    meals: ensureMealGroups(log.meals),
+    supplements: log.supplements || [],
+    workout: log.workout,
+  };
+}
 
 export const dayLogRepo = {
   /**
    * Get a day log by date (YYYY-MM-DD)
    */
   async getByDate(date: string): Promise<DayLog | undefined> {
-    return await db.day_logs.where("date").equals(date).first();
+    const log = await db.day_logs.where("date").equals(date).first();
+    return normalizeDayLog(log);
   },
 
   /**
    * Get a day log by id
    */
   async getById(id: string): Promise<DayLog | undefined> {
-    return await db.day_logs.get(id);
+    const log = await db.day_logs.get(id);
+    return normalizeDayLog(log);
   },
 
   /**
    * Get all day logs
    */
   async getAll(): Promise<DayLog[]> {
-    return await db.day_logs.toArray();
+    const logs = await db.day_logs.toArray();
+    return logs.map(log => normalizeDayLog(log)!);
   },
 
   /**
    * Get day logs for a date range
    */
   async getByDateRange(startDate: string, endDate: string): Promise<DayLog[]> {
-    return await db.day_logs
+    const logs = await db.day_logs
       .where("date")
       .between(startDate, endDate, true, true)
       .toArray();
+    return logs.map(log => normalizeDayLog(log)!);
   },
 
   /**
@@ -41,10 +79,15 @@ export const dayLogRepo = {
     const dayLog: DayLog = {
       id: generateId(),
       date: data.date || new Date().toISOString().split("T")[0], // Default to today
-      ...data,
+      meals: ensureMealGroups(data.meals),
+      supplements: data.supplements || [],
+      workout: data.workout,
       createdAt: now,
       updatedAt: now,
-    } as DayLog;
+      ...data,
+    };
+    // Ensure meals are normalized after spread (in case data.meals was provided)
+    dayLog.meals = ensureMealGroups(dayLog.meals);
 
     await db.day_logs.add(dayLog);
     return dayLog;
@@ -62,6 +105,7 @@ export const dayLogRepo = {
     const updated: DayLog = {
       ...existing,
       ...data,
+      meals: data.meals !== undefined ? ensureMealGroups(data.meals) : ensureMealGroups(existing.meals),
       updatedAt: getCurrentTimestamp(),
     };
     await db.day_logs.put(updated);
@@ -95,6 +139,47 @@ export const dayLogRepo = {
       ...data,
       date: new Date().toISOString().split("T")[0],
     });
+  },
+
+  /**
+   * Get or create a day log by date (YYYY-MM-DD)
+   */
+  async getOrCreateByDate(date: string, data?: Partial<Omit<DayLog, "id" | "date" | "createdAt" | "updatedAt">>): Promise<DayLog> {
+    const existing = await this.getByDate(date);
+    if (existing) {
+      return existing;
+    }
+    return await this.create({
+      ...data,
+      date,
+    });
+  },
+
+  /**
+   * Update a day log by date, creating it if it doesn't exist
+   * Safely merges the patch data with existing data
+   */
+  async updateByDate(date: string, patch: Partial<Omit<DayLog, "id" | "date" | "createdAt" | "updatedAt">>): Promise<DayLog> {
+    const existing = await this.getByDate(date);
+    
+    if (!existing) {
+      // Create new day log with patch data
+      return await this.create({
+        ...patch,
+        date,
+      });
+    }
+
+    // Merge patch with existing data
+    const merged: DayLog = {
+      ...existing,
+      ...patch,
+      meals: patch.meals !== undefined ? ensureMealGroups(patch.meals) : ensureMealGroups(existing.meals),
+      updatedAt: getCurrentTimestamp(),
+    };
+    
+    await db.day_logs.put(merged);
+    return merged;
   },
 };
 
