@@ -68,13 +68,38 @@ export interface Meal {
   [key: string]: any;
 }
 
+// MVP Daily State Types
+export type MealType = 'breakfast' | 'lunch' | 'dinner' | 'snacks';
+
+export interface DayMealItem {
+  recipeId: string;
+  amountG?: number;
+  amountMl?: number;
+}
+
+export interface DayMeals {
+  type: MealType;
+  items: DayMealItem[];
+}
+
+export interface DaySupplementState {
+  supplementId: string;
+  taken: boolean;
+}
+
+export interface DayWorkoutState {
+  workoutId: string;
+  variantId: string;
+}
+
 export interface DayLog {
   id: string;
   date: string; // YYYY-MM-DD format
   createdAt: string;
   updatedAt: string;
-  // Add more day log fields as needed
-  [key: string]: any;
+  meals: DayMeals[];
+  supplements: DaySupplementState[];
+  workout?: DayWorkoutState;
 }
 
 export interface Supplement {

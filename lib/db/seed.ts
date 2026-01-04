@@ -103,6 +103,13 @@ export async function seedDatabase(): Promise<void> {
   const dayLog1: DayLog = {
     id: generateId(),
     date: today,
+    meals: [
+      { type: 'breakfast', items: [] },
+      { type: 'lunch', items: [] },
+      { type: 'dinner', items: [] },
+      { type: 'snacks', items: [] },
+    ],
+    supplements: [],
     createdAt: getCurrentTimestamp(),
     updatedAt: getCurrentTimestamp(),
   };
