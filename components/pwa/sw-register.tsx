@@ -133,15 +133,16 @@ export function ServiceWorkerRegister() {
         if (registrations.length > 1) {
           console.log(`[SW] Found ${registrations.length} registrations, cleaning up old ones...`);
           // Sort by scope to keep the root scope (most likely the current one)
-          registrations.sort((a, b) => {
+          // Create a mutable copy since getRegistrations() returns a readonly array
+          const sortedRegistrations = [...registrations].sort((a, b) => {
             if (a.scope === location.origin + "/") return -1;
             if (b.scope === location.origin + "/") return 1;
             return 0;
           });
           // Unregister all except the first one
-          for (let i = 1; i < registrations.length; i++) {
-            await registrations[i].unregister();
-            console.log(`[SW] Unregistered old service worker: ${registrations[i].scope}`);
+          for (let i = 1; i < sortedRegistrations.length; i++) {
+            await sortedRegistrations[i].unregister();
+            console.log(`[SW] Unregistered old service worker: ${sortedRegistrations[i].scope}`);
           }
         }
       } catch (error) {

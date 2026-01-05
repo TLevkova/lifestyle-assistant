@@ -37,7 +37,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="light">
+      {/* TODO: Wire a settings toggle to dynamically set data-theme="light" or data-theme="dark" */}
       <body>
         <Head />
         <ServiceWorkerRegister />

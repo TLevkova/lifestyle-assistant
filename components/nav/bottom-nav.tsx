@@ -34,7 +34,7 @@ export function BottomNav() {
                     "w-full flex-col gap-1 h-auto py-3 px-2 min-h-[64px]",
                     isActive
                       ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      : "text-muted-foreground hover:text-text"
                   )}
                 >
                   <Icon className="h-5 w-5" />

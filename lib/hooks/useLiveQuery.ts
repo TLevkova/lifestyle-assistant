@@ -10,13 +10,13 @@ import { liveQuery, type Observable } from "dexie";
  * @returns The current value from the live query, or undefined while loading
  */
 export function useLiveQuery<T>(
-  querier: () => Promise<T> | Observable<T> | T,
+  querier: () => Promise<T> | T,
   deps?: React.DependencyList
 ): T | undefined {
   const [value, setValue] = useState<T | undefined>(undefined);
 
   useEffect(() => {
-    const observable = liveQuery(querier);
+    const observable = liveQuery(querier) as Observable<T>;
     const subscription = observable.subscribe({
       next: (result) => {
         setValue(result);
