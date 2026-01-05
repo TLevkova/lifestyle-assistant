@@ -28,6 +28,11 @@
 
   --destructive: 346 84% 49%;
 
+  /* Dashboard card colors - purple inspired */
+  --dashboard-card-bg: 257 45% 96%;
+  --dashboard-card-border: 257 35% 75%;
+  --dashboard-card-accent: 257 55% 65%;
+
   /* Radius */
   --radius-sm: 10px;
   --radius-md: 14px;
@@ -54,6 +59,11 @@
   --secondary-foreground: 250 19% 45%;
 
   --destructive: 346 84% 49%;
+
+  /* Dashboard card colors - purple inspired */
+  --dashboard-card-bg: 257 45% 96%;
+  --dashboard-card-border: 257 35% 75%;
+  --dashboard-card-accent: 257 55% 65%;
 }
 
 /* Manual theme override — dark */
@@ -76,6 +86,11 @@
   --secondary-foreground: 255 14% 92%;
 
   --destructive: 346 84% 49%;
+
+  /* Dashboard card colors - purple inspired */
+  --dashboard-card-bg: 250 28% 16%;
+  --dashboard-card-border: 257 30% 40%;
+  --dashboard-card-accent: 257 45% 55%;
 }
 
 /* System preference — only applies when no manual theme is set */
@@ -101,6 +116,11 @@
     --secondary-foreground: 255 14% 92%;
 
     --destructive: 346 84% 49%;
+
+    /* Dashboard card colors - purple inspired */
+    --dashboard-card-bg: 250 28% 16%;
+    --dashboard-card-border: 257 30% 40%;
+    --dashboard-card-accent: 257 45% 55%;
   }
 }
 
@@ -112,6 +132,26 @@
     background-color: hsl(var(--background));
     color: hsl(var(--text));
     font-feature-settings: "tnum";
+  }
+  
+  /* Select dropdown styling */
+  select {
+    color-scheme: light dark;
+  }
+  
+  select option {
+    background-color: hsl(var(--dashboard-card-bg));
+    color: hsl(var(--text));
+    padding: 0.5rem;
+  }
+  
+  /* Improve select appearance across browsers */
+  select::-ms-expand {
+    display: none;
+  }
+  
+  select:focus {
+    outline: none;
   }
 }
 
