@@ -37,7 +37,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme') || 'system';
+                  var html = document.documentElement;
+                  
+                  if (theme === 'light') {
+                    html.setAttribute('data-theme', 'light');
+                  } else if (theme === 'dark') {
+                    html.setAttribute('data-theme', 'dark');
+                  } else {
+                    // system - remove attribute to use prefers-color-scheme
+                    html.removeAttribute('data-theme');
+                  }
+                } catch (e) {
+                  // Fallback to system if localStorage fails
+                  document.documentElement.removeAttribute('data-theme');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body>
         <Head />
         <ServiceWorkerRegister />

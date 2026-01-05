@@ -30,12 +30,7 @@ export function BottomNav() {
                 <Button
                   variant={isActive ? "default" : "ghost"}
                   size="lg"
-                  className={cn(
-                    "w-full flex-col gap-1 h-auto py-3 px-2 min-h-[64px]",
-                    isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
+                  className="w-full flex-col gap-1 h-auto py-3 px-2 min-h-[64px]"
                 >
                   <Icon className="h-5 w-5" />
                   <span className="text-xs font-medium">{item.label}</span>

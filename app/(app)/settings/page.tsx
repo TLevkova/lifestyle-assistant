@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Download, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,10 +10,34 @@ import { dayLogRepo } from "@/lib/db/repos/dayLogRepo";
 import type { DayLog } from "@/lib/db/schema";
 import { unregisterAllServiceWorkers } from "@/components/pwa/sw-register";
 
+type Theme = "system" | "light" | "dark";
+
 export default function SettingsPage() {
   const [dbTestStatus, setDbTestStatus] = useState<string>("");
   const [todayLogs, setTodayLogs] = useState<DayLog[]>([]);
+  const [theme, setTheme] = useState<Theme>("system");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = (localStorage.getItem("theme") || "system") as Theme;
+    setTheme(savedTheme);
+  }, []);
+
+  const handleThemeChange = (newTheme: Theme) => {
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    
+    const html = document.documentElement;
+    if (newTheme === "light") {
+      html.setAttribute("data-theme", "light");
+    } else if (newTheme === "dark") {
+      html.setAttribute("data-theme", "dark");
+    } else {
+      // system - remove attribute to use prefers-color-scheme
+      html.removeAttribute("data-theme");
+    }
+  };
 
   const handleExport = async () => {
     try {
@@ -121,9 +145,33 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
+          <CardTitle>Appearance</CardTitle>
+          <CardDescription>Choose your preferred theme</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label htmlFor="theme-select" className="text-sm font-medium text-text">
+              Theme
+            </label>
+            <select
+              id="theme-select"
+              value={theme}
+              onChange={(e) => handleThemeChange(e.target.value as Theme)}
+              className="rounded-md border border-input bg-muted px-3 py-1.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+            >
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Sync & Backup</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-4">
           <div className="text-sm">
             <span className="text-muted-foreground">Sync: </span>
             <span>not enabled (Phase 4)</span>
@@ -226,7 +274,7 @@ export default function SettingsPage() {
                 {todayLogs.map((log) => (
                   <div
                     key={log.id}
-                    className="p-3 rounded-md border border-border bg-muted/50 text-sm"
+                    className="p-3 rounded-md border border-border bg-muted/50 text-sm text-text"
                   >
                     <div className="font-mono">
                       <div>ID: {log.id}</div>
