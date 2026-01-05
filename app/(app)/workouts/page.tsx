@@ -1,14 +1,11 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageContainer } from "@/components/ui/page-container";
 
 export default function WorkoutsPage() {
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardContent>
-          <p className="text-muted-foreground">Workout tracking coming soon...</p>
-        </CardContent>
-      </Card>
-    </div>
+    <PageContainer>
+      <EmptyState message="Workout tracking coming soon..." />
+    </PageContainer>
   );
 }
 

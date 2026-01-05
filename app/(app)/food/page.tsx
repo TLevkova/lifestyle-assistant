@@ -1,14 +1,11 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { PageContainer } from "@/components/ui/page-container";
 
 export default function FoodPage() {
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardContent>
-          <p className="text-muted-foreground">Food tracking coming soon...</p>
-        </CardContent>
-      </Card>
-    </div>
+    <PageContainer>
+      <EmptyState message="Food tracking coming soon..." />
+    </PageContainer>
   );
 }
 

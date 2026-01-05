@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { Download, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageContainer } from "@/components/ui/page-container";
+import { Select } from "@/components/ui/select";
 import { exportDatabase, importDatabase } from "@/lib/db/backup";
 import { toast } from "sonner";
 import { dayLogRepo } from "@/lib/db/repos/dayLogRepo";
@@ -142,27 +144,27 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <PageContainer spacing="lg">
       <Card>
         <CardHeader>
           <CardTitle>Appearance</CardTitle>
           <CardDescription>Choose your preferred theme</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <label htmlFor="theme-select" className="text-sm font-medium text-text">
+          <div className="flex items-center justify-between gap-4">
+            <label htmlFor="theme-select" className="text-sm font-medium text-text flex-shrink-0">
               Theme
             </label>
-            <select
+            <Select
               id="theme-select"
               value={theme}
               onChange={(e) => handleThemeChange(e.target.value as Theme)}
-              className="rounded-md border border-input bg-muted px-3 py-1.5 text-sm text-text focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+              variant="compact"
             >
               <option value="system">System</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
-            </select>
+            </Select>
           </div>
         </CardContent>
       </Card>
@@ -269,18 +271,18 @@ export default function SettingsPage() {
 
           {todayLogs.length > 0 && (
             <div className="mt-4">
-              <h3 className="text-sm font-semibold mb-2">Today&apos;s Logs:</h3>
+              <h3 className="text-sm font-semibold mb-3 text-text">Today&apos;s Logs:</h3>
               <div className="space-y-2">
                 {todayLogs.map((log) => (
                   <div
                     key={log.id}
-                    className="p-3 rounded-md border border-border bg-muted/50 text-sm text-text"
+                    className="p-3 rounded-lg border border-dashboard-card-border/40 bg-muted/50 text-sm text-text transition-all hover:bg-muted/70"
                   >
-                    <div className="font-mono">
-                      <div>ID: {log.id}</div>
-                      <div>Date: {log.date}</div>
-                      <div>Created: {new Date(log.createdAt).toLocaleString()}</div>
-                      <div>Updated: {new Date(log.updatedAt).toLocaleString()}</div>
+                    <div className="font-mono text-xs">
+                      <div className="text-text">ID: {log.id}</div>
+                      <div className="text-text">Date: {log.date}</div>
+                      <div className="text-muted-foreground">Created: {new Date(log.createdAt).toLocaleString()}</div>
+                      <div className="text-muted-foreground">Updated: {new Date(log.updatedAt).toLocaleString()}</div>
                     </div>
                   </div>
                 ))}
@@ -290,7 +292,7 @@ export default function SettingsPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }
 

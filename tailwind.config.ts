@@ -30,6 +30,10 @@ const config: Config = {
 
         destructive: "hsl(var(--destructive) / <alpha-value>)",
         "destructive-foreground": "hsl(0 0% 100%)",
+
+        "dashboard-card-bg": "hsl(var(--dashboard-card-bg))",
+        "dashboard-card-border": "hsl(var(--dashboard-card-border) / <alpha-value>)",
+        "dashboard-card-accent": "hsl(var(--dashboard-card-accent))",
       },
       borderRadius: {
         sm: "var(--radius-sm)",
