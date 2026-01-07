@@ -40,17 +40,26 @@ export interface Exercise {
   [key: string]: any;
 }
 
+export interface RecipeMeasurement {
+  productName: string;
+  quantity: number;
+  unit: string; // e.g., "g", "ml", "cups", "tbsp"
+}
+
 export interface Recipe {
   id: string;
   createdAt: string;
   updatedAt: string;
   name: string;
-  description?: string;
-  // Nutrition per 100g
-  caloriesPer100g?: number;
-  proteinPer100g?: number;
-  carbsPer100g?: number;
-  fatPer100g?: number;
+  description?: string; // Recipe preparation instructions
+  imageUrl?: string; // Base64 data URL or blob URL
+  // Total nutrition values
+  totalCalories?: number;
+  totalProtein?: number;
+  totalCarbs?: number;
+  totalFat?: number;
+  // Product measurements/ingredients
+  measurements?: RecipeMeasurement[];
   // Add more recipe fields as needed
   [key: string]: any;
 }

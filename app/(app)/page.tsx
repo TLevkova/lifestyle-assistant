@@ -73,11 +73,11 @@ export default function Home() {
       for (const meal of todayLog.meals) {
         for (const item of meal.items) {
           hasItems = true;
-          if (item.recipeId && item.amountG) {
+          if (item.recipeId) {
             try {
               const recipe = await db.recipes.get(item.recipeId);
-              if (recipe && recipe.caloriesPer100g) {
-                calories += (recipe.caloriesPer100g * item.amountG) / 100;
+              if (recipe && recipe.totalCalories) {
+                calories += recipe.totalCalories;
               }
             } catch (error) {
               // Recipe not found or missing calories - treat as 0
